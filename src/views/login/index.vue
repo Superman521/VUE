@@ -44,7 +44,7 @@ export default {
         // key(要校验得字段名).value(数组=>多条或者1条或者没有规则)
         mobile:
      [ { required: true, message: '请输入您得手机号' },
-       { pattern: /^1[3456789]\d{9}%/, message: '请输入正确得手机号' }
+       { pattern: /^1[34578]\d{9}$/, message: '请输入正确得手机号' }
      ],
         code: [{ required: true, massage: '请输入验证码' }, {
           pattern: /^\d{6}$/, massage: '请输入六位数字'
@@ -71,6 +71,13 @@ export default {
       this.$refs.formobj.validate(function (isok) {
         if (isok) {
           //   如果为turn则去服务器核对调用接口登录
+          this.$axios({
+            url: '/authorizations',
+            data: this.loginForm,
+            method: 'POST'
+          }).then(res => {
+            console.log(res.data)
+          })
         }
       })
     }
