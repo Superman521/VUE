@@ -75,8 +75,8 @@ export default {
             url: '/authorizations',
             data: this.loginForm,
             method: 'POST'
-          }).then(res => {
-            console.log(res.data)
+          }).then(result => {
+            window.localStorage.setItem('user.token', result.data.data.token)
           })
         }
       })
