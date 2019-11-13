@@ -1,9 +1,12 @@
 <template>
  <el-container>
               <!--左右布局 -->
-     <el-aside>
+     <el-aside class="left" style="width:220px">
+       <div class="top" style="background-color:#2e2f32">
+         <img src="../../assets/img/logo_admin.png" alt="">
+       </div>
               <!-- 左侧菜单 -->
-       <el-menu background-color="#353b4e" text-color="#adafb5" active-text-color="#ffd04b">
+       <el-menu  style="width:221px"   background-color="#353b4e" text-color="#adafb5" active-text-color="#ffd04b">
               <!-- 一级菜单 -->
         <el-menu-item>首页</el-menu-item>
               <!-- 二级菜单 -->
@@ -49,3 +52,18 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+.left{
+  height: 100vh;
+  width: 220px;
+  background-color: #353b4e;
+  overflow: hidden;
+  .top{
+    padding: 20px 0;
+    text-align: center;
+    img{
+      height: 30px;
+    }
+  }
+}
+</style>
