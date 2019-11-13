@@ -24,7 +24,7 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <div ref="abc"></div>
+    <!-- <div ref="abc"></div> -->
   </div>
 </template>
 
@@ -46,8 +46,8 @@ export default {
      [ { required: true, message: '请输入您得手机号' },
        { pattern: /^1[34578]\d{9}$/, message: '请输入正确得手机号' }
      ],
-        code: [{ required: true, massage: '请输入验证码' }, {
-          pattern: /^\d{6}$/, massage: '请输入六位数字'
+        code: [{ required: true, message: '请输入验证码' }, {
+          pattern: /^\d{6}$/, message: '请输入六位数字'
         }],
         checked: [{
         // rule代表当前得规则
