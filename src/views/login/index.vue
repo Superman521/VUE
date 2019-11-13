@@ -68,7 +68,7 @@ export default {
     login () {
     //   console.log(this.$ref.abc)
     //   this.$refs.formobj 获取el-form得对象实例
-      this.$refs.formobj.validate(function (isok) {
+      this.$refs.formobj.validate((isok) => {
         if (isok) {
           //   如果为turn则去服务器核对调用接口登录
           this.$axios({
@@ -77,6 +77,14 @@ export default {
             method: 'POST'
           }).then(result => {
             window.localStorage.setItem('user.token', result.data.data.token)
+            //  跳转到主页
+            this.$router.push('./home')
+          }).catch(() => {
+            // 提示消息
+            this.$message({
+              type: 'warning',
+              message: '手机号或者验证码错误'
+            })
           })
         }
       })
