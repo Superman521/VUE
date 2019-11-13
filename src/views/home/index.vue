@@ -32,7 +32,7 @@
               <!-- 大容器 -->
          <el-container>
          <el-header>
-           <layout-header></layout-header>
+          <layout-header></layout-header>
          </el-header>
           <!-- 中间内容 -->
            <el-main>
@@ -44,11 +44,11 @@
 </template>
 
 <script>
-// import layoutHeader from '../../components/layout-header.vue'
+import layoutHeader from '../../components/layout-header.vue'
 export default {
   name: 'home',
   components: {
-    // ' layout-header': layoutHeader
+    'layout-header': layoutHeader
   }
 }
 </script>
