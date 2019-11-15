@@ -5,7 +5,7 @@
     <el-col :span="6" class="left">
       <!-- 左侧 -->
       <i class="el-icon-s-fold"></i>
-      <span >江苏传智播客教育科技股份有限公司</span>
+      <span>江苏传智播客教育科技股份有限公司</span>
     </el-col>
 
     <!-- 右侧侧 -->
@@ -32,20 +32,20 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.left{
+.left {
   display: flex;
   align-items: center;
-  i{
+  i {
     font-size: 24px;
   }
-  span{
+  span {
     margin-left: 4px;
   }
 }
-.right{
+.right {
   display: flex;
   align-items: center;
-  img{
+  img {
     border-radius: 50%;
     margin-right: 5px;
   }
