@@ -35,7 +35,7 @@ export default {
         type: 'warning'
       }).then(() => {
         // 删除token
-        window.localStorage.removeItem('user.token')
+        window.localStorage.removeItem('user.tokenddddddd')
         // 跳转登录页面
         this.$router.push('/login')
         this.$message({

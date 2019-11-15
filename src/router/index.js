@@ -7,7 +7,7 @@ import Article from '@/views/article'
 import Publish from '@/views/publish'
 // 加载 nprogress 中的指定的样式文件
 // 注意:加载第三方包中的具体文件不需要写具体路径，直接写包名
-import 'nprogress/nprogress.css'
+
 import Nprogress from 'nprogress'
 
 Vue.use(VueRouter)
@@ -73,15 +73,16 @@ router.beforeEach((to, from, next) => {
 
   // 非登录页面校验
   // 获取用户token
-  const token = window.localStorage.getItem('user-token')
+  const token = window.localStorage.getItem('user.token')
   // 判断是否有无tonken
   if (token) {
     next()
   } else {
     // 没有登录到指定页面
     next('/login')
+    // 如果在非登录状态访问非登录页面，这里手动钟直进度条
+    Nprogress.done()
   }
-  next()
 })
 router.afterEach((to, from) => {
   // 结束顶部导航进度条
