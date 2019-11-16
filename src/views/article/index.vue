@@ -5,7 +5,7 @@
       <div slot="header" class="clearfix">
         <span>全部图文</span>
       </div>
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" label-width="80px">
         <el-form-item label="文章状态">
           <el-radio-group v-model="filterForm.status">
 
@@ -89,8 +89,8 @@
         <el-table-column
         prop="address"
         label="操作">
-        <el-button type="danger" size="mini">删除</el-button>
-        <el-button type="primary" size="mini">编辑</el-button>
+        <el-button type="danger" @click="onDelete(scope.row.id)" >删除</el-button>
+        <el-button type="primary" >编辑</el-button>
         </el-table-column>
       </el-table>
     </el-card>
@@ -114,34 +114,12 @@ export default {
     return {
       // 过滤数据的表单
       filterForm: {
-        status: 'null',
+        status: null,
         channel_id: null
         // begin_pibdate: '',
         // end_pubdate: ''
       },
       rangeData: '',
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
       articles: [], // 文章数据列表
       articleStatus: [
         {
@@ -166,9 +144,10 @@ export default {
           label: '已删除'
         }
       ],
-      totalCount: 0,
-      loading: true,
-      channels: []
+      totalCount: 0, // 总记录数
+      loading: true, // 表格的loading状态
+      channels: [], // 频道列表
+      page: 1// 当前页码
     }
   },
   created () {
@@ -211,6 +190,9 @@ export default {
         })
     },
     onpageChange (page) {
+      // 记录当前最新页面
+      this.page = page
+      // 请求加载指定页码的文章列表
       this.loadArticles(page)
     },
     loadChannels () {
@@ -221,6 +203,22 @@ export default {
         this.channels = res.data.data.channels
       }).catch(err => {
         console.log(err, '获取数据失败')
+      })
+    },
+    onDelete (articleId) {
+      this.$axios({
+        method: 'DELETE',
+        // 注意:接口路径中的:target是一个路径参数,:target是动态的,列入1,2,3不要写:
+        url: `/articles/${articleId}`,
+        headers: {
+          // 接口中说明的 Content-Type application/json 不需要传递  因为axios会自动添加发送
+          Authorization: `Bearer${window.localStorage.getItem('user.token')}`
+        }
+
+      }).then(res => {
+        this.loadArticles(this.page)
+      }).catch(err => {
+        console.log(err, '删除失败')
       })
     }
   }
