@@ -8,30 +8,38 @@
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="文章状态">
           <el-radio-group v-model="filterForm.status">
-            <el-radio label="全部"></el-radio>
-            <el-radio label="草稿"></el-radio>
-            <el-radio label="待审核"></el-radio>
-            <el-radio label="审核通过"></el-radio>
-            <el-radio label="审核失败"></el-radio>
+
+            <el-radio :label="null">全部</el-radio>
+            <el-radio label="0">草稿</el-radio>
+            <el-radio label="1">待审核</el-radio>
+            <el-radio label="2">审核通过</el-radio>
+            <el-radio label="3">审核失败</el-radio>
+            <el-radio label="4">已删除</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
-          <el-select placeholder="请选择活动区域" v-model="filterForm.channel_id">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select placeholder="请选择频道" v-model="filterForm.channel_id">
+            <el-option label="所有频道" :value="null"></el-option>
+            <el-option
+            :label="channel.name"
+             :value="channel.id"
+             v-for="channel in channels"
+            :key="channel.id"
+             >
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="时间选择">
           <el-date-picker
             v-model=" rangeData"
-            type="datetimerange"
+            type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            :default-time="['12:00:00']"
+           value-format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="loadArticles(1)">查询</el-button>
           <el-button>取消</el-button>
         </el-form-item>
       </el-form>
@@ -41,7 +49,7 @@
     <!-- 文章列表 -->
     <el-card class="box-card" style="margin-top:20px">
       <div slot="header" class="clearfix">
-        <span>共找到99999条符合条件的内容</span>
+        <span>共找到{{totalCount}}条符合条件的内容</span>
       </div>
     <!-- 表格 组件  el-table
     data表格得数组 要求是数组
@@ -86,7 +94,17 @@
         </el-table-column>
       </el-table>
     </el-card>
+    <el-pagination
+    @current-change="onpageChange"
+     style="margin-top:10px;margin-left:220px"
+    background
+    layout="prev, pager, next"
+    :total="totalCount"
+    :disabled="loading"
+    >
+</el-pagination>
   </div>
+
 </template>
 
 <script>
@@ -96,10 +114,10 @@ export default {
     return {
       // 过滤数据的表单
       filterForm: {
-        status: '',
-        channel_id: '',
-        begin_pibdate: '',
-        end_pubdate: ''
+        status: 'null',
+        channel_id: null
+        // begin_pibdate: '',
+        // end_pubdate: ''
       },
       rangeData: '',
       tableData: [
@@ -147,14 +165,21 @@ export default {
         //   value: 4,
           label: '已删除'
         }
-      ]
+      ],
+      totalCount: 0,
+      loading: true,
+      channels: []
     }
   },
   created () {
-    this.loadArticles()
+    // 初始化得时候加载第一页数据
+    this.loadArticles(1)
+    // 加载频道列表
+    this.loadChannels()
   },
   methods: {
-    loadArticles () {
+    loadArticles (page = 1) {
+      this.loading = true
       const token = window.localStorage.getItem('user.token')
       this.$axios({
         method: 'GET',
@@ -165,13 +190,38 @@ export default {
         //  注意：token的格式要求：bearer${window.}
         // 注意 bearer有个  空 格！
           Authorization: `Bearer ${token}`
+        },
+        // Query 参数使用params传递
+        params: {
+          page,
+          per_page: 10,
+          status: this.filterForm.status,
+          channel_id: this.filterForm.channel_id,
+          begin_pubdate: this.rangeData[0] ? this.rangeData[0] : null,
+          end_pubdate: this.rangeData[1] ? this.rangeData[1] : null
         }
       }).then(res => {
         this.articles = res.data.data.results
+        this.totalCount = res.data.data.total_count
       })
         .catch(err => {
           console.log(err, '获取数据失败')
+        }).finally(() => {
+          this.loading = false
         })
+    },
+    onpageChange (page) {
+      this.loadArticles(page)
+    },
+    loadChannels () {
+      this.$axios({
+        method: 'GET',
+        url: '/channels'
+      }).then(res => {
+        this.channels = res.data.data.channels
+      }).catch(err => {
+        console.log(err, '获取数据失败')
+      })
     }
   }
 }
