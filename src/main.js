@@ -22,6 +22,27 @@ axios.defaults.transformReponse = [function (data, headers) {
   }
   // return JSONbig.parse(data)
 }]
+// axios请求拦截器
+axios.interceptors.request.use(function (config) {
+  console.log('请求拦截器', config)
+  const token = window.localStorage.getItem('user.token')
+  // 统一添加
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  // config.headers.Authorization = `Bearer${window.localStorage.getItem('user.token')}`
+
+  return config
+}, function (error) {
+  return Promise.reject(error)
+})
+// axios 响应拦截器
+axios.interceptors.response.use(function (response) {
+  console.log('响应拦截器')
+  return response
+}, function (error) {
+  return Promise.reject(error)
+})
 
 Vue.prototype.$axios = axios// 共享给所有实例使用
 Vue.use(Element)// 注册整个得所有得elementUI组件 Vue.use 调用了elementUI里边的一个方法 install

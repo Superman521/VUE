@@ -159,17 +159,17 @@ export default {
   methods: {
     loadArticles (page = 1) {
       this.loading = true
-      const token = window.localStorage.getItem('user.token')
+      // const token = window.localStorage.getItem('user.token')
       this.$axios({
         method: 'GET',
         url: '/articles',
-        headers: {
-        //   添加请求头； 名字：值  ；
-        //  后端要求把token放到请求头中，使用一个名字叫：Authorization;
-        //  注意：token的格式要求：bearer${window.}
-        // 注意 bearer有个  空 格！
-          Authorization: `Bearer ${token}`
-        },
+        // headers: {
+        // //   添加请求头； 名字：值  ；
+        // //  后端要求把token放到请求头中，使用一个名字叫：Authorization;
+        // //  注意：token的格式要求：bearer${window.}
+        // // 注意 bearer有个  空 格！
+        //   Authorization: `Bearer ${token}`
+        // },
         // Query 参数使用params传递
         params: {
           page,
@@ -209,11 +209,11 @@ export default {
       this.$axios({
         method: 'DELETE',
         // 注意:接口路径中的:target是一个路径参数,:target是动态的,列入1,2,3不要写:
-        url: `/articles/${articleId}`,
-        headers: {
-          // 接口中说明的 Content-Type application/json 不需要传递  因为axios会自动添加发送
-          Authorization: `Bearer${window.localStorage.getItem('user.token')}`
-        }
+        url: `/articles/${articleId}`
+        // headers: {
+        //   // 接口中说明的 Content-Type application/json 不需要传递  因为axios会自动添加发送
+        //   Authorization: `Bearer${window.localStorage.getItem('user.token')}`
+        // }
 
       }).then(res => {
         this.loadArticles(this.page)
