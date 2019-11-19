@@ -5,6 +5,7 @@ import Login from '../views/login'
 import Homepage from '@/views/homepage'
 import Article from '@/views/article'
 import Publish from '@/views/publish'
+import Comment from '@/views/comment'
 // 加载 nprogress 中的指定的样式文件
 // 注意:加载第三方包中的具体文件不需要写具体路径，直接写包名
 
@@ -33,6 +34,10 @@ const routes = [
       {// 发布文章
         path: '/publish',
         component: Publish
+      },
+      {// 评论列表
+        path: '/comment',
+        component: Comment
       },
       {
         path: '/publish/:articleId',
