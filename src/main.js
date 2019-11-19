@@ -31,7 +31,7 @@ axios.interceptors.request.use(function (config) {
     config.headers.Authorization = `Bearer ${token}`
   }
   // config.headers.Authorization = `Bearer${window.localStorage.getItem('user.token')}`
-
+  // 通行得规则
   return config
 }, function (error) {
   return Promise.reject(error)

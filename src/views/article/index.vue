@@ -18,7 +18,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
-          <el-select placeholder="请选择频道" v-model="filterForm.channel_id">
+          <!-- <el-select placeholder="请选择频道" v-model="filterForm.channel_id">
             <el-option label="所有频道" :value="null"></el-option>
             <el-option
             :label="channel.name"
@@ -27,7 +27,8 @@
             :key="channel.id"
              >
             </el-option>
-          </el-select>
+          </el-select> -->
+            <channel-select  v-model="filterForm.channel_id"></channel-select>
         </el-form-item>
         <el-form-item label="时间选择">
           <el-date-picker
@@ -90,7 +91,10 @@
         prop="address"
         label="操作">
         <el-button type="danger" @click="onDelete(scope.row.id)" >删除</el-button>
-        <el-button type="primary" >编辑</el-button>
+        <el-button
+         type="primary"
+          @click="$router.push('/publish/'+ scope.row.id)"
+          >编辑</el-button>
         </el-table-column>
       </el-table>
     </el-card>
@@ -108,8 +112,12 @@
 </template>
 
 <script>
+import ChannelSelect from '@/components/channel-select'
 export default {
   name: 'home',
+  components: {
+    ChannelSelect
+  },
   data () {
     return {
       // 过滤数据的表单
@@ -146,15 +154,16 @@ export default {
       ],
       totalCount: 0, // 总记录数
       loading: true, // 表格的loading状态
-      channels: [], // 频道列表
+      // channels: [], // 频道列表
       page: 1// 当前页码
     }
   },
   created () {
+    console.log('article created')
     // 初始化得时候加载第一页数据
     this.loadArticles(1)
     // 加载频道列表
-    this.loadChannels()
+    // this.loadChannels()
   },
   methods: {
     loadArticles (page = 1) {
@@ -195,16 +204,16 @@ export default {
       // 请求加载指定页码的文章列表
       this.loadArticles(page)
     },
-    loadChannels () {
-      this.$axios({
-        method: 'GET',
-        url: '/channels'
-      }).then(res => {
-        this.channels = res.data.data.channels
-      }).catch(err => {
-        console.log(err, '获取数据失败')
-      })
-    },
+    // loadChannels () {
+    //   this.$axios({
+    //     method: 'GET',
+    //     url: '/channels'
+    //   }).then(res => {
+    //     this.channels = res.data.data.channels
+    //   }).catch(err => {
+    //     console.log(err, '获取数据失败')
+    //   })
+    // },
     onDelete (articleId) {
       this.$axios({
         method: 'DELETE',

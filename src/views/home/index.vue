@@ -43,7 +43,8 @@
           <!-- 中间内容 -->
            <el-main>
            <!-- 二级容器 -->
-          <router-view></router-view>
+           <!-- 禁止缓存功能  加一个key  -->
+          <router-view :key="$route.path"> </router-view>
         </el-main>
      </el-container>
   </el-container>

@@ -7,18 +7,13 @@
           <el-form-item label="标题">
             <el-input v-model="article.title"></el-input>
           </el-form-item>
-          <el-form-item label="内容" >
+          <el-form-item label="内容">
             <!-- <el-input type="textarea" v-model="article.content"></el-input> -->
             <!-- bidirectional data binding (双向数据绑定) -->
-            <quill-editor
-              v-model="article.content"
-              ref="myQuillEditor"
-              :options="editorOption"
-            >
-            </quill-editor>
+            <quill-editor v-model="article.content" ref="myQuillEditor" :options="editorOption"></quill-editor>
           </el-form-item>
           <el-form-item label="频道">
-            <el-select placeholder="请选择频道" v-model="article.channel_id">
+            <!-- <el-select placeholder="请选择频道" v-model="article.channel_id">
               <el-option label="所有频道" :value="null"></el-option>
               <el-option
                 :label="channel.name"
@@ -26,7 +21,9 @@
                 v-for="channel in channels"
                 :key="channel.id"
               ></el-option>
-            </el-select>
+            </el-select>-->
+            <!-- 封装得频道下拉列表 -->
+            <channel-select v-model="article.channel_id"></channel-select>
           </el-form-item>
           <!-- <el-form-item label="封面">
     <el-radio-group v-model="form.resource">
@@ -53,10 +50,12 @@ import 'quill/dist/quill.bubble.css'
 // 加载富文本编辑器得核心组件
 import { quillEditor } from 'vue-quill-editor'
 
+import ChannelSelect from '@/components/channel-select'
 export default {
   name: 'PublishArticle',
   components: {
-    quillEditor
+    quillEditor,
+    ChannelSelect
   },
   data () {
     return {
@@ -69,15 +68,34 @@ export default {
         }, // 文章
         channel_id: ''
       },
-      channels: [],
+      // channels: [],
       editorOption: {}
     }
   },
   created () {
-    this.loadChannels()
+    console.log('publish created')
+    // this.loadChannels()
+    if (this.$route.params.articleId) {
+      this.loadArticle()
+    }
   },
   methods: {
+    loadArticle () {
+      this.$axios({
+        method: 'GET',
+        url: `/articles/${this.$route.params.articleId}`
+      }).then(res => {
+        this.article = res.data.data
+      })
+    },
     onSubmit (draft) {
+      if (this.$route.params.articleId) {
+        this.updateArticle(draft)
+      } else {
+        this.addArticle(draft)
+      }
+    },
+    addArticle (draft) {
       this.$axios({
         methods: '/POST',
         url: '/articles',
@@ -99,18 +117,36 @@ export default {
           console.log(err, '保存失败')
         })
     },
-    loadChannels () {
+    updateArticle (draft) {
       this.$axios({
-        method: 'GET',
-        url: '/channels'
+        method: 'PUT',
+        url: `/articles/${this.$route.params.articleId}`,
+        params: {
+          draft
+        },
+        data: this.article
       })
         .then(res => {
-          this.channels = res.data.data.channels
-        })
-        .catch(err => {
-          console.log(err, '获取数据失败')
+          this.$message({
+            type: 'success',
+            message: '更新成功'
+          })
+        }).catch(() => {
+          this.$message.error('更新失败')
         })
     }
+    // loadChannels () {
+    //   this.$axios({
+    //     method: 'GET',
+    //     url: '/channels'
+    //   })
+    //     .then(res => {
+    //       this.channels = res.data.data.channels
+    //     })
+    //     .catch(err => {
+    //       console.log(err, '获取数据失败')
+    //     })
+    // }
   }
 }
 </script>
